@@ -115,8 +115,8 @@ describe R10K::Git::BareRepository do
       expect(subject.__ref_type('3084373e8d181cf2fea5b4ade2690ba22872bd67')).to eq :commit
     end
 
-    it "returns nil when the type cannot be inferred" do
-      expect(subject.__ref_type('1.2.3')).to be_nil
+    it "returns :unknown when the type cannot be inferred" do
+      expect(subject.__ref_type('1.2.3')).to eq :unknown
     end
   end
 end

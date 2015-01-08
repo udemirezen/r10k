@@ -48,6 +48,8 @@ class R10K::Git::BareRepository
       :tag
     elsif __resolve(pattern)
       :commit
+    else
+      :unknown
     end
   end
 
