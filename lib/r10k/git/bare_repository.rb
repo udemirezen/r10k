@@ -41,6 +41,16 @@ class R10K::Git::BareRepository
     end
   end
 
+  def __ref_type(pattern)
+    if branches.include? pattern
+      :branch
+    elsif tags.include? pattern
+      :tag
+    elsif __resolve(pattern)
+      :commit
+    end
+  end
+
   include R10K::Logging
 
   private

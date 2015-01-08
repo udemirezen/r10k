@@ -97,4 +97,26 @@ describe R10K::Git::BareRepository do
       expect(subject.__resolve('1.2.3')).to be_nil
     end
   end
+
+  describe "determining ref type" do
+    before do
+      subject.clone
+    end
+
+    it "can infer the type of a branch ref" do
+      expect(subject.__ref_type('master')).to eq :branch
+    end
+
+    it "can infer the type of a tag ref" do
+      expect(subject.__ref_type('1.0.0')).to eq :tag
+    end
+
+    it "can infer the type of a commit" do
+      expect(subject.__ref_type('3084373e8d181cf2fea5b4ade2690ba22872bd67')).to eq :commit
+    end
+
+    it "returns nil when the type cannot be inferred" do
+      expect(subject.__ref_type('1.2.3')).to be_nil
+    end
+  end
 end
