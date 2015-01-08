@@ -41,6 +41,9 @@ class R10K::Git::BareRepository
     end
   end
 
+  # @todo remove alias
+  alias rev_parse __resolve
+
   def __ref_type(pattern)
     if branches.include? pattern
       :branch
@@ -51,6 +54,10 @@ class R10K::Git::BareRepository
     else
       :unknown
     end
+  end
+
+  def get_ref(pattern)
+    R10K::Git::Ref.new(pattern, self)
   end
 
   include R10K::Logging
