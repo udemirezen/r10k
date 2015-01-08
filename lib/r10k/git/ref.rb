@@ -19,8 +19,9 @@ class R10K::Git::Ref
   attr_accessor :repository
 
   def initialize(ref, repository = nil)
-    @ref = ref
+    @ref        = ref
     @repository = repository
+    @_ref_type  = :unknown
   end
 
   # Can we locate the commit in the related repository?
@@ -31,12 +32,8 @@ class R10K::Git::Ref
     false
   end
 
-  # Should we try to fetch this ref?
-  #
-  # Since we don't know the type of this ref, we have to assume that it might
-  # be a branch and always update accordingly.
   def fetch?
-    true
+    FETCH_METHOD[ref_type].call
   end
 
   def sha1
@@ -58,6 +55,19 @@ class R10K::Git::Ref
   end
 
   def inspect
-    "#<#{self.class}: #{to_s}>"
+    "#<#{self.class}: #{to_s} (#{@_ref_type})>"
   end
+
+  def ref_type
+    if @_ref_type == :unknown
+      @_ref_type = @repository.__ref_type(ref)
+    end
+    @_ref_type
+  end
+
+  FETCH_METHOD = {
+    :branch => { :fetch? => proc { true } },
+    :tag    => { :fetch? => proc { resolvable? }},
+    :commit => { :fetch? => proc { resolvable? }},
+  }
 end
