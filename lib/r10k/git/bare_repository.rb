@@ -34,6 +34,13 @@ class R10K::Git::BareRepository
     output.stdout.scan(%r[refs/tags/(.*)$]).flatten
   end
 
+  def __resolve(pattern)
+    result = git ['rev-parse', "#{pattern}^{commit}"], :git_dir => git_dir, :raise_on_fail => false
+    if result.success?
+      result.stdout
+    end
+  end
+
   include R10K::Logging
 
   private
