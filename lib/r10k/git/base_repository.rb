@@ -3,6 +3,12 @@ require 'r10k/logging'
 
 class R10K::Git::BaseRepository
 
+  # @abstract
+  # @return [Pathname] The path to the Git directory
+  def git_dir
+    raise NotImplementedError
+  end
+
   def __resolve(pattern)
     result = git ['rev-parse', "#{pattern}^{commit}"], :git_dir => git_dir.to_s, :raise_on_fail => false
     if result.success?
