@@ -29,16 +29,6 @@ class R10K::Git::BareRepository < R10K::Git::BaseRepository
     output.stdout.scan(%r[refs/heads/(.*)$]).flatten
   end
 
-  def __resolve(pattern)
-    result = git ['rev-parse', "#{pattern}^{commit}"], :git_dir => git_dir.to_s, :raise_on_fail => false
-    if result.success?
-      result.stdout
-    end
-  end
-
-  # @todo remove alias
-  alias rev_parse __resolve
-
   def __ref_type(pattern)
     if branches.include? pattern
       :branch

@@ -3,6 +3,17 @@ require 'r10k/logging'
 
 class R10K::Git::BaseRepository
 
+  def __resolve(pattern)
+    result = git ['rev-parse', "#{pattern}^{commit}"], :git_dir => git_dir.to_s, :raise_on_fail => false
+    if result.success?
+      result.stdout
+    end
+  end
+
+  # For compatibility with R10K::Git::Ref
+  # @todo remove alias
+  alias rev_parse __resolve
+
   def tags
     output = git %w[for-each-ref refs/tags --format %(refname)], :git_dir => git_dir.to_s
     output.stdout.scan(%r[refs/tags/(.*)$]).flatten
