@@ -30,6 +30,22 @@ class R10K::Git::BaseRepository
     output.stdout.scan(%r[refs/tags/(.*)$]).flatten
   end
 
+  def __ref_type(pattern)
+    if branches.include? pattern
+      :branch
+    elsif tags.include? pattern
+      :tag
+    elsif __resolve(pattern)
+      :commit
+    else
+      :unknown
+    end
+  end
+
+  def get_ref(pattern)
+    R10K::Git::Ref.new(pattern, self)
+  end
+
   include R10K::Logging
 
   private

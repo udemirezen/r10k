@@ -35,4 +35,52 @@ shared_examples_for "a git repository" do
       expect(subject.__resolve('1.2.3')).to be_nil
     end
   end
+
+  describe "determining ref type" do
+    before do
+      subject.clone(remote)
+    end
+
+    it "can infer the type of a branch ref" do
+      expect(subject.__ref_type('master')).to eq :branch
+    end
+
+    it "can infer the type of a tag ref" do
+      expect(subject.__ref_type('1.0.0')).to eq :tag
+    end
+
+    it "can infer the type of a commit" do
+      expect(subject.__ref_type('3084373e8d181cf2fea5b4ade2690ba22872bd67')).to eq :commit
+    end
+
+    it "returns :unknown when the type cannot be inferred" do
+      expect(subject.__ref_type('1.2.3')).to eq :unknown
+    end
+  end
+
+  describe "retrieving refs" do
+    before do
+      subject.clone(remote)
+    end
+
+    it "can retrieve branches" do
+      ref = subject.get_ref('master')
+      expect(ref.ref_type).to eq :branch
+    end
+
+    it "can retrieve tags" do
+      ref = subject.get_ref('1.0.0')
+      expect(ref.ref_type).to eq :tag
+    end
+
+    it "can retrieve commits" do
+      ref = subject.get_ref('3084373e8d181cf2fea5b4ade2690ba22872bd67')
+      expect(ref.ref_type).to eq :commit
+    end
+
+    it "creates an empty ref when the ref can't be found" do
+      ref = subject.get_ref('1.2.3')
+      expect(ref.ref_type).to eq :unknown
+    end
+  end
 end
