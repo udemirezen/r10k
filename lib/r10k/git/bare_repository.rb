@@ -7,13 +7,12 @@ class R10K::Git::BareRepository
     @path.to_s
   end
 
-  def initialize(remote, basedir, dirname)
-    @remote = remote
-    @path   = Pathname.new(File.join(basedir, dirname))
+  def initialize(basedir, dirname)
+    @path = Pathname.new(File.join(basedir, dirname))
   end
 
-  def clone
-    git ['clone', '--mirror', @remote, git_dir]
+  def clone(remote)
+    git ['clone', '--mirror', remote, git_dir]
   end
 
   def fetch
