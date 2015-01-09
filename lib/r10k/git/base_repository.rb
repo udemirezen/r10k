@@ -3,6 +3,11 @@ require 'r10k/logging'
 
 class R10K::Git::BaseRepository
 
+  def tags
+    output = git %w[for-each-ref refs/tags --format %(refname)], :git_dir => git_dir.to_s
+    output.stdout.scan(%r[refs/tags/(.*)$]).flatten
+  end
+
   include R10K::Logging
 
   private
