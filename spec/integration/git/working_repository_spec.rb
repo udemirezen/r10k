@@ -70,4 +70,14 @@ describe R10K::Git::WorkingRepository do
       end
     end
   end
+
+  describe "listing branches" do
+    before do
+      subject.clone(remote)
+    end
+
+    it "lists the local branches in alphabetical order" do
+      expect(subject.branches).to eq(%w[master])
+    end
+  end
 end
