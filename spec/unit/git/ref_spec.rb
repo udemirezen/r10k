@@ -4,7 +4,7 @@ require 'r10k/git'
 describe R10K::Git::Ref do
 
   let(:ref) { 'master' }
-  let(:repo) { double('git repository') }
+  let(:repo) { double('git repository', :git_dir => Pathname.new('/some/nonexistent/path')) }
   subject { described_class.new(ref) }
 
   describe "fetching the SHA1" do
@@ -16,7 +16,7 @@ describe R10K::Git::Ref do
 
     it "raises an error if the SHA1 could not be resolved" do
       subject.repository = repo
-      expect(repo).to receive(:rev_parse).with(ref).and_raise(R10K::Git::UnresolvableRefError, "Couldn't resolve")
+      expect(repo).to receive(:rev_parse).with(ref).and_return(nil)
 
       expect {
         subject.sha1

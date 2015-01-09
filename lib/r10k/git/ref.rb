@@ -39,9 +39,12 @@ class R10K::Git::Ref
   def sha1
     if @repository.nil?
       raise ArgumentError, "Cannot resolve #{self.inspect}: no associated git repository"
-    else
-      @repository.rev_parse(ref)
     end
+    sha = @repository.rev_parse(ref)
+    if sha.nil?
+      raise R10K::Git::UnresolvableRefError.new("Cannot resolve ref '#{@ref}'", :git_dir => @repository.git_dir)
+    end
+    sha
   end
 
   def ==(other)
