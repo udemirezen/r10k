@@ -4,7 +4,7 @@ require 'r10k/logging'
 class R10K::Git::BareRepository
 
   def git_dir
-    @path.to_s
+    @path
   end
 
   def initialize(basedir, dirname)
@@ -12,11 +12,11 @@ class R10K::Git::BareRepository
   end
 
   def clone(remote)
-    git ['clone', '--mirror', remote, git_dir]
+    git ['clone', '--mirror', remote, git_dir.to_s]
   end
 
   def fetch
-    git ['fetch', '--prune'], :git_dir => git_dir
+    git ['fetch', '--prune'], :git_dir => git_dir.to_s
   end
 
   def exist?
@@ -24,17 +24,17 @@ class R10K::Git::BareRepository
   end
 
   def branches
-    output = git %w[for-each-ref refs/heads --format %(refname)], :git_dir => git_dir
+    output = git %w[for-each-ref refs/heads --format %(refname)], :git_dir => git_dir.to_s
     output.stdout.scan(%r[refs/heads/(.*)$]).flatten
   end
 
   def tags
-    output = git %w[for-each-ref refs/tags --format %(refname)], :git_dir => git_dir
+    output = git %w[for-each-ref refs/tags --format %(refname)], :git_dir => git_dir.to_s
     output.stdout.scan(%r[refs/tags/(.*)$]).flatten
   end
 
   def __resolve(pattern)
-    result = git ['rev-parse', "#{pattern}^{commit}"], :git_dir => git_dir, :raise_on_fail => false
+    result = git ['rev-parse', "#{pattern}^{commit}"], :git_dir => git_dir.to_s, :raise_on_fail => false
     if result.success?
       result.stdout
     end
