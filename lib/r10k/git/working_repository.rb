@@ -6,6 +6,10 @@ class R10K::Git::WorkingRepository
 
   attr_reader :path
 
+  def git_dir
+    @path + '.git'
+  end
+
   def initialize(basedir, dirname)
     @path = Pathname.new(File.join(basedir, dirname))
   end
@@ -38,7 +42,7 @@ class R10K::Git::WorkingRepository
   end
 
   def alternates
-    R10K::Git::Alternates.new(@path + '.git')
+    R10K::Git::Alternates.new(git_dir)
   end
 
   def origin
