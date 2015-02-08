@@ -21,13 +21,11 @@ class R10K::Git::BaseRepository
   alias rev_parse __resolve
 
   def branches
-    output = git %w[for-each-ref refs/heads --format %(refname)], :git_dir => git_dir.to_s
-    output.stdout.scan(%r[refs/heads/(.*)$]).flatten
+    for_each_ref('refs/heads')
   end
 
   def tags
-    output = git %w[for-each-ref refs/tags --format %(refname)], :git_dir => git_dir.to_s
-    output.stdout.scan(%r[refs/tags/(.*)$]).flatten
+    for_each_ref('refs/tags')
   end
 
   def __ref_type(pattern)
@@ -49,6 +47,13 @@ class R10K::Git::BaseRepository
   include R10K::Logging
 
   private
+
+  # @param pattern [String]
+  def for_each_ref(pattern)
+    matcher = %r[#{pattern}/(.*)$]
+    output = git ['for-each-ref', pattern, '--format', '%(refname)'], :git_dir => git_dir.to_s
+    output.stdout.scan(matcher).flatten
+  end
 
   # Wrap git commands
   #
