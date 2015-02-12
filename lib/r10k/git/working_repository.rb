@@ -16,13 +16,14 @@ class R10K::Git::WorkingRepository < R10K::Git::BaseRepository
 
   def clone(remote, opts = {})
     argv = ['clone', remote, @path.to_s]
-    if opts[:ref]
-      argv += ['-b', opts[:ref]]
-    end
     if opts[:reference]
       argv += ['--reference', opts[:reference]]
     end
     git argv
+
+    if opts[:ref]
+      checkout(opts[:ref])
+    end
   end
 
   def checkout(ref)
