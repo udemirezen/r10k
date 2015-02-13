@@ -19,7 +19,8 @@ class R10K::Module::Git < R10K::Module::Base
   def initialize(title, dirname, args)
     super
     parse_options(@args)
-    @working_dir = R10K::Git::WorkingDir.new(@ref, @remote, @dirname, @name)
+    #@working_dir = R10K::Git::WorkingDir.new(@ref, @remote, @dirname, @name)
+    @working_dir = R10K::Git::StatefulRepository.new(@ref, @remote, @dirname, @name)
   end
 
   def version
@@ -29,7 +30,7 @@ class R10K::Module::Git < R10K::Module::Base
   def properties
     {
       :expected => @ref,
-      :actual   => (@working_dir.current.sha1 rescue "(unresolvable)"),
+      :actual   => (@working_dir.head rescue "(unresolvable)"),
       :type     => :git,
     }
   end
@@ -47,6 +48,7 @@ class R10K::Module::Git < R10K::Module::Base
   end
 
   def status
+    return @working_dir.status
     if not @working_dir.exist?
       return :absent
     elsif not @working_dir.git?

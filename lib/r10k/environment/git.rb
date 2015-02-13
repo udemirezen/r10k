@@ -1,6 +1,7 @@
 require 'r10k/logging'
 require 'r10k/puppetfile'
 require 'r10k/git/working_dir'
+require 'r10k/git/stateful_repository'
 
 # This class implements an environment based on a Git branch.
 #
@@ -36,7 +37,8 @@ class R10K::Environment::Git < R10K::Environment::Base
     @remote = options[:remote]
     @ref    = options[:ref]
 
-    @working_dir = R10K::Git::WorkingDir.new(@ref, @remote, @basedir, @dirname)
+    #@working_dir = R10K::Git::WorkingDir.new(@ref, @remote, @basedir, @dirname)
+    @working_dir = R10K::Git::StatefulRepository.new(@ref, @remote, @basedir, @dirname)
   end
 
   # Clone or update the given Git environment.
@@ -52,6 +54,7 @@ class R10K::Environment::Git < R10K::Environment::Base
   end
 
   def status
+    return @working_dir.status
     if !@working_dir.exist?
       :absent
     elsif !@working_dir.git?
