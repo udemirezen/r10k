@@ -6,7 +6,7 @@ class R10K::Git::ThinRepository < R10K::Git::WorkingRepository
   def initialize(basedir, dirname)
     super
 
-    if exist?
+    if exist? && origin
       set_cache(origin)
     end
   end
